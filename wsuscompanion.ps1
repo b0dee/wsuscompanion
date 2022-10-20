@@ -23,18 +23,38 @@ $padding = 21
 #region Helper Functions
 #endregion Helper Functions
 
-#region Root Form
+#region Initialise Form
 $root = New-Object System.Windows.Forms.Form
 $root.Text = "WSUS Companion $($versionString)"
 $root.AutoSize = $true
 $root.StartPosition = 'CenterScreen'
+#endregion Initialise Form
+
 #region Tab Control
 $rootTab = New-Object System.Windows.Forms.TabControl
 $rootTab.AutoSize = $true
 $rootTab.Location = New-Object System.Drawing.Point(0,($padding))
-#endregion
+
+#region Updates Tab
+$updateTab = New-Object System.Windows.Forms.TabPage
+$updateTab.Text = "Updates"
+$rootTab.Controls.Add($updateTab) # Add tab to root tab control
+#endregion Updates Tab
+
+#region Maintenance Tab
+$maintenanceTab = New-Object System.Windows.Forms.TabPage
+$maintenanceTab.Text = "Maintenance"
+$rootTab.Controls.Add($maintenanceTab)
+# [checkbox] Delete declined updates
+# [checkbox] Delete superceded updates
+# [listbox] Phrases if found in updates should be declined
+#endregion Maintenance Tab
+
+#endregion Tab Control
+
 #region Menu Strip
 $rootMenuStrip = New-Object System.Windows.Forms.MenuStrip
+
 #region File
 $rootMenuFile = New-Object System.Windows.Forms.ToolStripMenuItem
 $rootMenuFile.Name = "File"
@@ -46,8 +66,12 @@ $rootMenuFile.Text = "File"
 $rootMenuFileSettings = New-Object System.Windows.Forms.ToolStripMenuItem
 $rootMenuFileSettings.Name = "Settings"
 $rootMenuFileSettings.Text = "Settings"
-$rootMenuFile.DropDownItems.Add($rootMenuFileSettings)
+$rootMenuFileSettings.Add_Click({})
 #endregion Settings
+
+#region Add Dropdown Items To File Dropdown
+$rootMenuFile.DropDownItems.Add($rootMenuFileSettings)
+#endregion Add Dropdown Items To File Dropdown
 
 #endregion File Dropdown
 
@@ -62,6 +86,7 @@ $rootMenuHelp.Add_Click({[system.Diagnostics.Process]::start("https://github.com
 $rootMenuAbout = New-Object System.Windows.Forms.ToolStripMenuItem
 $rootMenuAbout.Name = "About"
 $rootMenuAbout.Text = "About"
+$rootMenuAbout.Add_Click({[system.Diagnostics.Process]::start("https://github.com/b0dee/wsuscompanion")})
 #endregion About
 
 #region Add Menu Items to Root Menu Strip
@@ -69,30 +94,14 @@ $rootMenuStrip.Items.Add($rootMenuFile)
 $rootMenuStrip.Items.Add($rootMenuHelp)
 $rootMenuStrip.Items.Add($rootMenuAbout)
 #endregion Add Menu Items to Root Menu Strip
-#endregion Root Form
 
-#region Updates
-$updateTab = New-Object System.Windows.Forms.TabPage
-$updateTab.Text = "Updates"
-$rootTab.Controls.Add($updateTab) # Add tab to root tab control
-#endregion Updates
+#endregion Menu Strip
 
-#region Maintenance
-$maintenanceTab = New-Object System.Windows.Forms.TabPage
-$maintenanceTab.Text = "Maintenance"
-$rootTab.Controls.Add($maintenanceTab)
-# [checkbox] Delete declined updates
-# [checkbox] Delete superceded updates
-# [listbox] Phrases if found in updates should be declined
-#endregion Maintenance
-
-#region Settings
-#endregion Settings
 
 #region Add elements to form
 $root.Controls.Add($rootMenuStrip)
 $root.Controls.Add($rootTab)
-#endregion
+#endregion Add elements to form
 
 #region Display form
 $root.Topmost = $true
